@@ -2,7 +2,7 @@
 echo "**********Change Header - Started**********"
 chmod 777 -R ./
 echo "**********First Line Deletion started**********"
-NODES=(catalog sales_category sales_category-catalog sales_category-sales_category)
+NODES=(catalog sales_category catalog-sales_category sales_category-sales_category)
 echo "**********Delete Header of CSVs - Started **********"
 for i in "${NODES[@]}"
 do

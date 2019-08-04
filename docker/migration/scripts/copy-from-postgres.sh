@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "**********Copy from Postgresql to CSV - Started**********"
-NODES=(catalog sales_category sales_category-catalog sales_category-sales_category)
+NODES=(catalog sales_category catalog-sales_category sales_category-sales_category)
 export PGPASSWORD=$POSTGRES_PASSWORD
 
 for i in "${NODES[@]}"

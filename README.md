@@ -6,43 +6,45 @@ Here I use Neo4j community edition.
 
 ![PROCESS](documents/img/process.png?raw=true "Process")
 
-With the help of this docker images, you can migrate your rdbms to graph database, 
-all you have to do is creating your rdbms CREATE script and also initial sql insert scripts;
-put them under /docker/postgres/sqls folder
-update /docker/migration/headers/ txt files, these files are  mapping of the extracted data from postgresql to graph db 
-update /docker/migration/sqls txt files, these files are for exporting data from post 
+This is the db structure of PostgreSQL and Neo4j versions.
 
+![DB Structure](documents/img/db-structure.png?raw=true "DB Structure")
+
+
+With the help of this docker images, you can migrate your rdbms to graph database.
+All you have to do is; 
+- create your rdbms' create script and initial sql insert scripts.
+- put them under /docker/postgres/sqls folder
+- update /docker/migration/headers/ txt files (these files are  map of the extracted data from postgresql to graph db) 
+- update /docker/migration/sqls txt files (these files are for exporting data from postgresql) 
 
 
 ### Folders
-Given below is the folder definitions, this will give you a hint 
-what are these folders for
+Given below is the folder definitions. These will give you a hint of what are these folders for.
 
 ### migration
-Contains documents for migration docker image. This image is responsible for extract data from postgresql in csv format,
-and after this, delete the header of each file and change the header with the ones in the header folder. This headers are important
-to import data to graph db 
+Contains documents for docker image migration. This image is responsible for extracting data from postgresql in csv format.
+aftrer extration, script deletes the header of each file and change the header with the texts in the header folder. 
+This headers are used to import data to graph db. 
 
 #### migration/headers/
-contains all of the column header for graph db migration. These headers are added the
+Contains all of the headers for graph db migration. These headers are added the
 first line of the extracted csv data from test-db. With the help of the headers 
 the data could be created in graph under each node and edges.
 
 Ex:
 Given below Catalog, SalesCategory and Catalog-SalesCategory headers
 ##### catalog Header
-catalog_id:ID(CATALOG-ID),name,is_deleted:boolean
+catalog_id:ID(CATALOG-ID),name
 
 here; 
 catalog_id: property name inside Catalog node
 ID: catalog_id is the id of the Catalog
 (CATALOG-ID): refers the namespace of this id. so we can use this id in other related csvs as a reference-id.
 name: property name inside Catalog node
-is_deleted: property name inside Catalog node
-boolean: is the type of the property
 
 ##### sales_category-catalog Header
-:END_ID(SALES-CATEGORY-ID),:START_ID(CATALOG-ID),sort_order,is_deleted:boolean
+:END_ID(SALES-CATEGORY-ID),:START_ID(CATALOG-ID)
 
 here;
 as this is a edge (relation) it contains START_ID, END_ID With ID spaces like here START_ID  id space is
@@ -50,10 +52,9 @@ as this is a edge (relation) it contains START_ID, END_ID With ID spaces like he
 :END_ID(SALES-CATEGORY-ID): refers end node of the relation and connected to the id space of sales_category.SALES-CATEGORY-ID
 :START_ID(CATALOG-ID): refers start node of the relation and connected to the id space of catalog.CATALOG-ID
 
-the rest of the headers are properties
 
 ##### sales_category Header
-sales_category_id:ID(SALES-CATEGORY-ID),is_deleted:boolean
+sales_category_id:ID(SALES-CATEGORY-ID)
 
 here;
 this file has almost same properties in catalog header. with its id property with id space of (SALES-CATEGORY-ID), and one more property is_deleted with boolean
@@ -69,7 +70,6 @@ there are 4 scripts
 
 #### migration/sqls
 contains the sql scripts to extract data from postgres database.
-
 
 ### neo4j
 contains neo4j docker image related files, most important folder here for our application is import folder, cause 
