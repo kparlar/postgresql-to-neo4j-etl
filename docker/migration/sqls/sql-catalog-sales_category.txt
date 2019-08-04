@@ -1,0 +1,1 @@
+select sales_category_id, catalog_id from "catalog-sales_category"

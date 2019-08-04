@@ -1,0 +1,1 @@
+select parent_id, child_id, catalog_id from "sales_category-sales_category"

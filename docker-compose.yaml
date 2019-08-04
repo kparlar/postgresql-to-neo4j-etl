@@ -1,0 +1,46 @@
+version: "3.5"
+services:
+  neo4j:
+    build:
+      context: .
+      dockerfile: docker/neo4j/Dockerfile
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - ./docker/neo4j/data:/data
+      - ./docker/neo4j/logs:/logs
+      - ./docker/neo4j/import:/var/lib/neo4j/import
+      - ./docker/neo4j/conf:/var/lib/neo4j/conf
+    environment:
+      - NEO4J_dbms_memory_pagecache_size=4000m
+      - NEO4J_dbms_memory_heap_initial__size=2000m
+      - NEO4J_dbms_memory_heap_max__size=5000m
+      - NEO4J_dbms_active__database=graph.db
+      - NEO4J_USER=neo4j
+      - NEO4J_DEFAULT_PASSWORD=neo4j
+      - NEO4J_PASSWORD=secret
+    depends_on:
+      - migration
+  migration:
+    build:
+      context: .
+      dockerfile: docker/migration/Dockerfile
+    volumes:
+      - ./docker/neo4j/import:/postgresql-to-neo4j-etl/csv
+    depends_on:
+      - postgres
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+  postgres:
+    image: "postgres:9.6"
+    ports:
+      - "9001:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=test-db
+    volumes:
+      - ./docker/postgres/sqls/local/:/docker-entrypoint-initdb.d/:ro
