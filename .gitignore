@@ -1,0 +1,9 @@
+/docker/neo4j/data
+/docker/neo4j/logs
+/docker/neo4j/import
+/docker/postgres/sqls/local
+/docker/postgres/sqls/staging
+/.project
+/target
+.idea
+**/*.iml

@@ -1,0 +1,27 @@
+tags:
+- "postgresql-to-neo4j-etl"
+- "build"
+
+options:
+  machineType: "N1_HIGHCPU_8"
+
+timeout: "3600s"
+
+steps:
+  - name: "docker/compose:1.19.0"
+    id: "build-images"
+    entrypoint: "./build.sh"
+    env:
+    - IMAGE_MIGRATION=eu.gcr.io/$PROJECT_ID/postgresql-to-neo4j-etl-migration
+    - IMAGE_NEO4J=eu.gcr.io/$PROJECT_ID/postgresql-to-neo4j-etl-neo4j
+    - SERVICE_TAG=$TAG_NAME
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-image-migration'
+    args: ['push', "eu.gcr.io/$PROJECT_ID/postgresql-to-neo4j-etl-migration:$TAG_NAME"]
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-image-neo4j'
+    args: ['push', "eu.gcr.io/$PROJECT_ID/postgresql-to-neo4j-etl-neo4j:$TAG_NAME"]
+
+images: ["eu.gcr.io/$PROJECT_ID/postgresql-to-neo4j-etl-migration:$TAG_NAME", "eu.gcr.io/$PROJECT_ID/postgresql-to-neo4j-etl-neo4j:$TAG_NAME"]
